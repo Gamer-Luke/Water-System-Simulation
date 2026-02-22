@@ -334,7 +334,7 @@ df2 = pd.DataFrame({
     "Total Salt Used": [soft_total_salt_used]
 })
 
-st.write("Show Total Made/Waste Table")
+st.write("Total Made/Waste Table")
 st.table(df2)
 
 # Optional: show table
