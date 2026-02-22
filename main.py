@@ -306,7 +306,7 @@ st.line_chart(df, x="Hour", y=["softTankLevel", "softCapacity"], height=500)
 st.subheader("Town Tank Level")
 st.line_chart(df, x="Hour", y=["townTankLevel", "townCapacity"], height=500)
 
-st.subheader("Plant ON/OFF Status")
+st.subheader("RO Plant ON/OFF Status")
 st.line_chart({
     "Status" : [1 if x else 0 for x in ro_plant_states],
     "Level" : [x / ro_capacity for x in ro_levels]
@@ -334,8 +334,8 @@ df2 = pd.DataFrame({
     "Total Salt Used": [soft_total_salt_used]
 })
 
-if st.checkbox("Show Total Made/Waste Table"):
-    st.table(df2)
+st.write("Show Total Made/Waste Table")
+st.table(df2)
 
 # Optional: show table
 if st.checkbox("Show Data Table"):
