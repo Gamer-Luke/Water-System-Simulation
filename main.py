@@ -96,7 +96,7 @@ usage_df = pd.DataFrame(
 )
 
 st.write("Double-Click in the table below to Input the usages for each category in L/h, and the hours during which they occur.")
-edited_df = st.data_editor(usage_df)
+edited_usage_df = st.data_editor(usage_df)
 
 # allow a small random variation in the hourly usage
 random_pct = st.slider("Usage random variation (%)", 0, 100, 20, step = 5) / 100
@@ -208,10 +208,10 @@ for step in range(steps):
         last_usage_hour = hour
 
     mask = (
-        (usage_df["Start Time (h)"] <= hour) &
-        (hour < usage_df["Finish Time (h)"])
+        (edited_usage_df["Start Time (h)"] <= hour) &
+        (hour < edited_usage_df["Finish Time (h)"])
     )
-    total_usage_this_hour = usage_df.loc[mask, "RO Usage (L/h)"].sum()
+    total_usage_this_hour = edited_usage_df.loc[mask, "RO Usage (L/h)"].sum()
     total_usage_this_hour *= hour_multiplier
 
     # convert to per step volume
@@ -238,7 +238,7 @@ for step in range(steps):
     soft_inflows.append(soft_inflow_applied)
     ro_inflows.append(ro_permeate_applied)
     
-    outflows.append(usage_volume)
+    outflows.append(total_usage_this_hour / 60)
     
     town_column_states.append(town_column_on)
     soft_column_states.append(soft_column_on)
@@ -294,8 +294,8 @@ df = pd.DataFrame({
 
 st.header("Simulation Results")
 
-st.subheader("RO Outflow (Usage)")
-st.line_chart(df, x="Hour", y="RoOutflow", y_label="Liters per Hour", height=500)
+st.subheader("RO Usage (L/m)")
+st.line_chart(df, x="Hour", y="RoOutflow", y_label="Liters per Minute", height=500)
 
 st.subheader("RO Tank Levels")
 st.line_chart(df, x="Hour", y=["roTankLevel", "RoLowLimit", "roCapacity"], height=500)
@@ -326,12 +326,12 @@ st.line_chart({
 })
 
 df2 = pd.DataFrame({
-    "Total RO Made": [ro_total_made],
-    "Total RO Waste": [ro_total_waste],
-    "Total Soft Used": [ro_total_waste + ro_total_made],
-    "Total Soft Made": [soft_total_made],
-    "Total Town Made": [town_total_made],
-    "Total Salt Used": [soft_total_salt_used]
+    "Total RO Made (L)": [int(ro_total_made)],
+    "Total RO Waste (L)": [int(ro_total_waste)],
+    "Total Soft Used (L)": [int(ro_total_waste + ro_total_made)],
+    "Total Soft Made (L)": [int(soft_total_made)],
+    "Total Town Made (L)": [int(town_total_made)],
+    "Total Salt Used (kg)": [int(soft_total_salt_used)]
 })
 
 st.write("Total Made/Waste Table")
